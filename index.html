@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Text Editor</title>
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- pdf.js for rendering PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <!-- pdf-lib.js for creating and modifying PDFs -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <!-- Inter font -->
+    <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
+    <!-- Link to external stylesheet -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">PDF Text Editor</h1>
+            <p class="text-lg text-gray-600 mt-2">Upload a PDF, click on text to edit, and download your changes.</p>
+        </header>
+
+        <!-- Controls -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4">
+                <label for="pdf-upload" class="cursor-pointer bg-blue-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition-colors duration-300">
+                    Upload PDF
+                </label>
+                <input type="file" id="pdf-upload" class="hidden" accept=".pdf">
+                <span id="file-name" class="text-gray-500">No file selected</span>
+            </div>
+            <button id="download-btn" class="w-full sm:w-auto bg-green-600 text-white px-5 py-2.5 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-300 disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>
+                Download Edited PDF
+            </button>
+        </div>
+
+        <!-- Status/Loader -->
+        <div id="status-container" class="text-center my-8 hidden">
+            <div class="loader inline-block"></div>
+            <p id="status-text" class="text-gray-600 mt-4 text-lg"></p>
+        </div>
+        
+        <!-- PDF Viewer -->
+        <div id="pdf-viewer" class="bg-white p-4 md:p-8 rounded-lg shadow-inner">
+            <!-- PDF pages will be rendered here -->
+        </div>
+    </div>
+
+    <!-- Link to external JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>
