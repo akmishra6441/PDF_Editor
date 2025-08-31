@@ -1,7 +1,7 @@
-// Ensure the DOM is fully loaded before running the script
+
 document.addEventListener('DOMContentLoaded', () => {
 
-    // Set worker source for pdf.js
+    
     if (window.pdfjsLib) {
         pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.worker.min.js`;
     } else {
@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    // --- DOM Elements ---
+    
     const pdfUpload = document.getElementById('pdf-upload');
     const fileNameSpan = document.getElementById('file-name');
     const pdfViewer = document.getElementById('pdf-viewer');
@@ -17,17 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const statusContainer = document.getElementById('status-container');
     const statusText = document.getElementById('status-text');
 
-    // --- Global State ---
-    let originalPdfFile = null; // Store the original File object
-    let textElements = []; // To store text elements for saving
+    
+    let originalPdfFile = null; 
+    let textElements = []; 
 
-    // --- Event Listeners ---
+    
     pdfUpload.addEventListener('change', handleFileSelect);
     downloadBtn.addEventListener('click', savePdfWithBackend);
 
-    /**
-     * Handles the file selection event.
-     */
+    
     async function handleFileSelect(event) {
         const file = event.target.files[0];
         if (!file || file.type !== 'application/pdf') {
@@ -35,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        originalPdfFile = file; // Save the file object
+        originalPdfFile = file; 
         fileNameSpan.textContent = file.name;
         pdfViewer.innerHTML = '';
         textElements = [];
@@ -66,9 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    /**
-     * Renders a single page of the PDF.
-     */
+   
     async function renderPage(pdf, pageNum) {
         const page = await pdf.getPage(pageNum);
         const scale = 1.5;
@@ -114,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
             div.setAttribute('contenteditable', 'true');
             textLayerDiv.appendChild(div);
 
-            // Store element and its properties for saving, including coordinates
+            
             textElements.push({
                 element: div,
                 originalText: item.str,
@@ -125,9 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    /**
-     * Gathers edits and sends them to the Python backend to save the PDF.
-     */
+    
     async function savePdfWithBackend() {
         if (!originalPdfFile) {
             alert('No PDF loaded.');
@@ -137,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showStatus('Applying changes with backend...');
         downloadBtn.disabled = true;
 
-        // 1. Collect only the changed text elements
+        
         const edits = textElements
             .filter(elem => elem.element.textContent !== elem.originalText)
             .map(elem => ({
@@ -154,13 +148,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // 2. Create FormData to send file and JSON data
+        
         const formData = new FormData();
         formData.append('pdf', originalPdfFile);
         formData.append('edits', JSON.stringify(edits));
 
         try {
-            // 3. Send data to the Flask backend
+            
             const response = await fetch('http://127.0.0.1:5000/edit-pdf', {
                 method: 'POST',
                 body: formData,
@@ -171,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(`Backend error: ${response.status} ${errorText}`);
             }
 
-            // 4. Process the returned PDF file for download
+            
             const blob = await response.blob();
             const link = document.createElement('a');
             link.href = URL.createObjectURL(blob);
@@ -189,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Utility Functions ---
+    
     function showStatus(text) {
         statusText.textContent = text;
         statusContainer.style.display = 'block';
